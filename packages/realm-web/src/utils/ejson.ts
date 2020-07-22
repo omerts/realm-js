@@ -24,7 +24,7 @@ import { EJSON } from "bson";
  * @param obj The object containing BSON types.
  * @returns The document in extended-JSON format.
  */
-export function serialize(obj: object): object {
+export function serialize<Obj extends object>(obj: Obj): object {
     return EJSON.serialize(obj);
 }
 
@@ -34,10 +34,10 @@ export function serialize(obj: object): object {
  * @param obj The object or array of objects in extended-JSON format.
  * @returns The object or array of objects with inflated BSON types.
  */
-export function deserialize<R extends any>(obj: object | object[]): R {
+export function deserialize<Obj extends object>(obj: object | object[]): Obj {
     if (Array.isArray(obj)) {
-        return obj.map(doc => EJSON.deserialize(doc)) as any;
+        return obj.map(doc => EJSON.deserialize(doc)) as Obj;
     } else {
-        return EJSON.deserialize(obj) as R;
+        return EJSON.deserialize(obj) as Obj;
     }
 }
