@@ -29,6 +29,9 @@ import { getEnvironment } from "./environment";
 
 type DetermineAppUrl = () => Promise<string>;
 
+/**
+ *
+ */
 export type Window = {
     /**
      * Attempt to close the window.
