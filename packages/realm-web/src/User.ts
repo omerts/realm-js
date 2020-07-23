@@ -225,28 +225,13 @@ export class User<
         this.refreshToken = null;
     }
 
-    /**
-     * Authenticate and retrieve the access and refresh tokens.
-     *
-     * @param credentials Credentials to use when logging in.
-     */
-    // public async logIn(credentials: Realm.Credentials) {
-    //     const {
-    //         userId,
-    //         accessToken,
-    //         refreshToken,
-    //     } = await this.app.authenticator.authenticate(credentials);
-    //     if (userId !== this.id) {
-    //         throw new Error("Logged into a different user");
-    //     }
-    //     // Store the access and refresh token
-    //     this.accessToken = accessToken;
-    //     this.refreshToken = refreshToken;
-    // }
-
     /** @inheritdoc */
-    public async linkCredentials(credentials: Realm.Credentials) {
-        throw new Error("Not yet implemented");
+    public async linkCredentials(credentials: Credentials) {
+        const response = await this.app.authenticator.authenticate(
+            credentials,
+            this,
+        );
+        console.log(response);
     }
 
     public async refreshAccessToken() {

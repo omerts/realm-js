@@ -20,6 +20,8 @@ import { Fetcher } from "./Fetcher";
 import { Storage } from "./storage";
 import { OAuth2Helper } from "./OAuth2Helper";
 import { Credentials } from "./Credentials";
+import { encodeQueryString, encodeUrl } from "./utils/string";
+import { User } from "./User";
 
 /**
  * The response from an authentication request.
@@ -70,16 +72,12 @@ export class Authenticator {
      * Perform the login, based on the credentials.
      *
      * @param credentials Credentials to use when logging in.
-     * @param link Should the request link with the current user?
+     * @param linkWithUser Should the request link with the current user?
      */
     public async authenticate(
-        credentials: Realm.Credentials<any>,
-        link = false,
+        credentials: Credentials<any>,
+        linkWithUser?: User<any, any>,
     ): Promise<AuthResponse> {
-        if (link) {
-            throw new Error("Linking accounts are not yet implemented");
-        }
-
         if (
             credentials.providerType.startsWith("oauth2") &&
             typeof credentials.payload.redirectUrl === "string"
@@ -90,11 +88,17 @@ export class Authenticator {
         } else {
             // See https://github.com/mongodb/stitch-js-sdk/blob/310f0bd5af80f818cdfbc3caf1ae29ffa8e9c7cf/packages/core/sdk/src/auth/internal/CoreStitchAuth.ts#L746-L780
             const appUrl = await this.fetcher.getAppUrl();
+            const { url: loginUrl } = appUrl
+                .authProvider(credentials.providerName)
+                .login();
             const response = await this.fetcher.fetchJSON<object, any>({
                 method: "POST",
-                url: appUrl.authProvider(credentials.providerName).login().url,
+                url: encodeUrl(loginUrl, {
+                    link: linkWithUser ? true : undefined,
+                }),
                 body: credentials.payload,
-                tokenType: "none",
+                tokenType: linkWithUser ? "access" : "none",
+                user: linkWithUser,
             });
             // Spread out values from the response and ensure they're valid
             const {

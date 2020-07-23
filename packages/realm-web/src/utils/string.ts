@@ -38,9 +38,14 @@ export function generateRandomString(length: number, alphabet: string) {
  * @returns A URL encoded representation of the parameters.
  */
 export function encodeQueryString(params: {
-    [key: string]: string | number | boolean;
+    [key: string]: string | number | boolean | undefined;
 }) {
-    return Object.entries(params)
+    // Filter out params with undefined values
+    const filteredParams = Object.entries(params).filter(
+        ([k, v]) => typeof v !== "undefined",
+    ) as [string, string | number | boolean][];
+    // Turn this into a string
+    return filteredParams
         .map(([k, v]) => [k, encodeURIComponent(v)])
         .map(([k, v]) => `${k}=${v}`)
         .join("&");
@@ -59,4 +64,23 @@ export function decodeQueryString(str: string) {
             .map(kvp => kvp.split("="))
             .map(([k, v]) => [k, decodeURIComponent(v)]),
     );
+}
+
+/**
+ * @param url The url to prepend to the query string.
+ * @param query The query parameters.
+ * @returns The url with a querystring attached, seperated by a "?" if any of the query params has values.
+ */
+export function encodeUrl(
+    url: string,
+    query: {
+        [key: string]: string | number | boolean | undefined;
+    },
+) {
+    const queryString = encodeQueryString(query);
+    if (queryString.length > 0) {
+        return url + "?" + queryString;
+    } else {
+        return url;
+    }
 }
