@@ -19,6 +19,10 @@
 import { Storage } from "./storage";
 import { Window } from "./OAuth2Helper";
 
+interface TextDecoder {
+    decode(buffer: Uint8Array, options?: {stream: boolean}): string;
+}
+
 export type Environment = {
     /**
      * The default storage instance on the environment.
@@ -29,6 +33,8 @@ export type Environment = {
      * Open a browser window.
      */
     openWindow: (url: string) => Window | null;
+
+    makeTextDecoder(): TextDecoder;
 };
 
 let environment: Environment | null = null;

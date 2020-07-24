@@ -27,6 +27,7 @@ export { LocalStorage };
 const environment: Environment = {
     defaultStorage: new LocalStorage().prefix("realm-web"),
     openWindow: url => window.open(url),
+    makeTextDecoder: () => new TextDecoder(),
 };
 
 setEnvironment(environment);

@@ -18,6 +18,7 @@
 
 import { setEnvironment, Environment } from "../environment";
 import { MemoryStorage } from "../storage";
+import { TextDecoder } from "util";
 
 const environment: Environment = {
     defaultStorage: new MemoryStorage(),
@@ -25,6 +26,7 @@ const environment: Environment = {
         console.log(`Please open this URL: ${url}`);
         return null;
     },
+    makeTextDecoder: () => new TextDecoder(),
 };
 
 setEnvironment(environment);
