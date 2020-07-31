@@ -1,6 +1,18 @@
 ?.?.? Release notes (2020-??-??)
 =============================================================
 
+### Enhancements
+* None
+
+### Fixed
+* None
+
+### Internal
+* None
+
+0.8.0 Release notes (2020-07-31)
+=============================================================
+
 ### Breaking changes
 * Renamed `Realm.app` to `Realm.getApp` to make it less conflicting with a local `app` variable.
 
