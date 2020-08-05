@@ -197,6 +197,14 @@ export class User<
         }
     }
 
+    get identities(): Realm.UserIdentity[] {
+        if (this._profile) {
+            return this._profile.identities;
+        } else {
+            throw new Error("A profile was never fetched for this user");
+        }
+    }
+
     public async refreshProfile() {
         // Fetch the latest profile
         const locationUrl = await this.fetcher.getLocationUrl();
@@ -231,7 +239,10 @@ export class User<
             credentials,
             this,
         );
-        console.log(response);
+        // Update the access token
+        this.accessToken = response.accessToken;
+        // Refresh the profile to include the new identity
+        await this.refreshProfile();
     }
 
     public async refreshAccessToken() {
